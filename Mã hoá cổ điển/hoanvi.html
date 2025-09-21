@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Mã hoá Hoán vị</title>
+	<style>
+		body {
+	  background: radial-gradient(circle at top, #020202, #000);
+	  color: #00ffcc;
+	  font-family: "Courier New", monospace;
+	  margin: 0;
+	  padding: 0;
+	  overflow-x: hidden;
+	}
+
+	h1, h2 {
+	  text-shadow: 0 0 12px #00ffcc, 0 0 25px #00ff99, 0 0 40px #008877;
+	  text-align: center;
+	  letter-spacing: 2px;
+	}
+
+	#thong-tin {
+	  padding: 25px;
+	  border-bottom: 1px solid #0ff;
+	  background: rgba(0, 0, 0, 0.85);
+	  box-shadow: 0 0 25px #0ff4, inset 0 0 30px #0ff2;
+	}
+	#thong-tin p {
+	  color: #aaa;
+	  text-align: justify;
+	  font-size: 0.95rem;
+	  line-height: 1.6;
+	}
+
+	#chi-tiet {
+	  display: grid;
+	  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+	  gap: 20px;
+	  padding: 20px;
+	}
+
+	#chi-tiet > div {
+	  background: rgba(0, 20, 20, 0.9);
+	  border: 1px solid #0ff5;
+	  border-radius: 12px;
+	  padding: 20px;
+	  box-shadow: 0 0 15px #0ff3, inset 0 0 20px #0ff2;
+	  transition: transform 0.3s ease;
+	}
+	#chi-tiet > div:hover {
+	  transform: translateY(-5px);
+	  box-shadow: 0 0 25px #0ff7, inset 0 0 25px #0ff3;
+	}
+
+	label {
+	  display: block;
+	  margin-top: 12px;
+	  font-weight: bold;
+	  color: #00ffaa;
+	  text-shadow: 0 0 8px #00ffaa;
+	}
+
+	input {
+	  background: #000;
+	  color: #00ffcc;
+	  border: 1px solid #00ffaa;
+	  border-radius: 6px;
+	  padding: 8px 12px;
+	  margin-top: 5px;
+	  margin-bottom: 10px;
+	  width: 95%;
+	  font-size: 1rem;
+	  transition: 0.25s ease;
+	}
+	input:focus {
+	  border-color: #ff6600;
+	  box-shadow: 0 0 12px #ff6600, 0 0 20px #ff3300 inset;
+	  outline: none;
+	}
+
+	button {
+	  background: #000;
+	  color: #00ffaa;
+	  border: 1px solid #00ffaa;
+	  padding: 10px 18px;
+	  margin: 5px 5px 0 0;
+	  cursor: pointer;
+	  font-size: 0.95rem;
+	  text-transform: uppercase;
+	  letter-spacing: 1px;
+	  border-radius: 6px;
+	  transition: all 0.25s ease;
+	}
+	button:hover {
+	  background: #00ffaa;
+	  color: #000;
+	  transform: scale(1.05);
+	  box-shadow: 0 0 12px #00ffaa, 0 0 25px #00ff77;
+	}
+
+	.ket-qua {
+	  background: #000;
+	  border: 1px solid #00ffcc;
+	  border-radius: 8px;
+	  padding: 15px;
+	  font-size: 1.2rem;
+	  letter-spacing: 2px;
+	  text-align: center;
+	  text-shadow: 0 0 12px #00ffcc, 0 0 20px #00ffaa;
+	  margin-top: 15px;
+	  word-break: break-word;
+	  box-shadow: inset 0 0 15px #00ffee33, 0 0 20px #00ffaa44;
+	}
+	</style>
+</head>
+<body>
+	<div id="thong-tin">
+		<h1>Phương pháp mã hoá Hoán vị</h1>
+		<p>Mã hoá hoán vị (Transposition Cipher) là một trong những phương pháp mã hoá cổ điển, trong đó các ký tự của bản rõ không bị thay thế bởi ký tự khác mà chỉ thay đổi vị trí theo một quy tắc nhất định. Khóa của hệ mã chính là quy luật hoán vị này. Bản mã vì thế có cùng tập ký tự với bản rõ, nhưng trật tự bị xáo trộn, làm mất đi cấu trúc gốc và gây khó khăn cho việc đọc hiểu trực tiếp.</p>
+	</div>
+	<div id="chi-tiet">
+		<div class="khoa-chu-cai">
+			<div id="thu-nghiem">
+				<div>
+					<h2>Khoá chữ cái</h2>
+					<label>Nhập bản rõ/bản mã:</label><br>
+					<input class="ban-ro" type="text" value="ANHYEUEMNGUYENTHINHUY"><br>
+					<label>Nhập khoá:</label><br>
+					<input class="khoa" type="text" value="DHKTCNTN">
+				</div>
+				<button class="ma-hoa" onclick="ma_hoa_khoa_chu_cai()">Mã hoá</button>
+				<button class="giai-ma" onclick="giai_ma_khoa_chu_cai()">Giải mã</button>
+			</div>
+			<div id="ket-qua">
+				<div>
+					<h2>Results</h2>
+					<p class="ket-qua"></p>
+				</div>
+			</div>
+		</div>
+		<div class="khoa-day-so">
+			<div id="thu-nghiem">
+				<div>
+					<h2>Khoá dãy số</h2>
+					<label>Nhập bản rõ/bản mã:</label><br>
+					<input class="ban-ro" value="ANHYEUEMNGUYENTHINHUY"><br>
+					<label>Nhập khoá:</label><br>
+					<input class="khoa" type="number" value="23471586">
+				</div>
+
+				<button class="ma-hoa" onclick="ma_hoa_khoa_day_so()">Mã hoá</button>
+				<button class="giai-ma" onclick="giai_ma_khoa_day_so()">Giải mã</button>
+			</div>
+			<div id="ket-qua">
+				<div>
+					<h2>Results</h2>
+					<p class="ket-qua"></p>
+				</div>
+			</div>
+		</div>
+		<div class="hoan-vi-kep">
+			<div id="thu-nghiem">
+				<div>
+					<h2>Hoán vị kép</h2>
+					<label>Nhập bản rõ/bản mã:</label><br>
+					<input class="ban-ro" value="ANHYEUEMNGUYENTHINHUY"><br>
+					<label>Nhập khoá:</label><br>
+					<input class="khoa-hang" type="text" value="DI">
+					<input class="khoa-cot" type="text" value="KTCN">
+				</div>
+
+				<button class="ma-hoa" onclick="ma_hoa_hoan_vi_kep()">Mã hoá</button>
+				<button class="giai-ma" onclick="giai_ma_hoan_vi_kep()">Giải mã</button>
+			</div>
+			<div id="ket-qua">
+				<div>
+					<h2>Results</h2>
+					<p class="ket-qua"></p>
+				</div>
+			</div>
+		</div>
+		<div class="hoan-vi-bang-chu-cai">
+			<div id="thu-nghiem">
+				<div>
+					<h2>Hoán vị bảng chữ cái</h2>
+					<label>Nhập bản rõ/bản mã:</label><br>
+					<input class="ban-ro" value="ANHYEUEMNGUYENTHINHUY"><br>
+					<label>Nhập khoá:</label><br>
+					<input class="khoa" type="text" value="INDCEOBZVQPWKLTSAFHYRUMXGJ">
+				</div>
+
+				<button class="ma-hoa" onclick="ma_hoa_hoan_vi_bang_chu_cai()">Mã hoá</button>
+				<button class="giai-ma" onclick="giai_ma_hoan_vi_bang_chu_cai()">Giải mã</button>
+			</div>
+			<div id="ket-qua">
+				<div>
+					<h2>Results</h2>
+					<p class="ket-qua"></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	//khoa chu cai
+	//Cái dở của loại này là: Khi ta chèn "X" vào cuối cho đủ bảng thì khi giải mã ta không biết được là ký tự X nào nằm trong bản rõ hoặc là ký tự chèn vào.
+	//Khi giải mã, ta chém tất cả X ở cuối nên có thể dẫn tới mất mát dữ liệu.
+	const bang_chu_cai = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	const N = bang_chu_cai.length;
+	let result;
+	
+	function ma_hoa_khoa_chu_cai() { //ANHYEUEMNGUYENTHINHUY
+		result = "";
+		const ban_ro = document.querySelector('#chi-tiet .khoa-chu-cai #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa = document.querySelector('#chi-tiet .khoa-chu-cai #thu-nghiem div .khoa').value.toUpperCase()
+		const kq = document.querySelector('#chi-tiet .khoa-chu-cai #ket-qua div .ket-qua')
+
+		let sap_xep_chu_cai = [];
+		for(let i=0; i<khoa.length; i++){
+			sap_xep_chu_cai.push(khoa[i]);
+		}
+		sap_xep_chu_cai.sort();
+		let cot_ban_dau = [];
+		for(let i=0; i<khoa.length; i++){
+			let j = sap_xep_chu_cai.indexOf(khoa[i])
+			cot_ban_dau.push(j);
+			sap_xep_chu_cai[j] = null;
+		}
+		console.log(cot_ban_dau)
+		let bang_ma_hoa = [], tmp = [];
+		for (let i = 0; i < ban_ro.length; i++) {
+			tmp.push(ban_ro[i]);
+			if ((i + 1) % khoa.length === 0) {
+				bang_ma_hoa.push(tmp);
+				tmp = [];
+			}
+		}
+		//Them X
+		if (tmp.length > 0){
+			if(tmp.length < khoa.length){
+				let so_luong_x = khoa.length - tmp.length;
+				for(let i=0; i<so_luong_x; i++){
+					tmp.push("X");
+				}
+			}
+			bang_ma_hoa.push(tmp);
+		}
+		console.log(bang_ma_hoa)
+		
+		for (let i = 0; i < khoa.length; i++) {
+			let col;
+			for (let k = 0; k < cot_ban_dau.length; k++) {
+				if(i===cot_ban_dau[k]) col = cot_ban_dau.indexOf(i);
+			}
+
+			for (let j = 0; j < bang_ma_hoa.length; j++) {
+				result += bang_ma_hoa[j][col];
+			}
+		}
+		//console.log(result)
+		kq.innerHTML = result;
+	}
+	
+	function giai_ma_khoa_chu_cai() { //EEYANINGNHUHUNXMHXYYUETX
+		result = "";
+		const ban_ma = document.querySelector('#chi-tiet .khoa-chu-cai #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa = document.querySelector('#chi-tiet .khoa-chu-cai #thu-nghiem div .khoa').value.toUpperCase()
+		const kq = document.querySelector('#chi-tiet .khoa-chu-cai #ket-qua div .ket-qua')
+		
+		let sap_xep_chu_cai = [];
+		for(let i=0; i<khoa.length; i++){
+			sap_xep_chu_cai.push(khoa[i]);
+		}
+		
+		let key = sap_xep_chu_cai;
+		sap_xep_chu_cai.sort();
+		let sap_xep_chu_cai_copy = sap_xep_chu_cai;
+		let cot_ban_dau = [];
+		for(let i=0; i<khoa.length; i++){
+			let j = sap_xep_chu_cai_copy.indexOf(khoa[i])
+			cot_ban_dau.push(j);
+			sap_xep_chu_cai_copy[j] = null;
+		}
+
+		//Khoi tao bang giai ma
+		let bang_giai_ma = [];
+		let so_cot = ban_ma.length/khoa.length;
+		for (let i = 0; i < so_cot; i++){
+			let hang = [];
+			for (let j = 0; j < khoa.length; j++){
+				hang.push(null);
+			}
+			bang_giai_ma.push(hang);
+		}
+		for (let i = 0; i < khoa.length; i++) {
+			let col = cot_ban_dau[i];
+
+			for (let j = 0; j < bang_giai_ma.length; j++) {
+				let vitri = col*so_cot + j;
+				bang_giai_ma[j][i] = ban_ma[vitri]
+			}
+		}
+		console.log(bang_giai_ma)
+		//Chem X
+		let last = bang_giai_ma[bang_giai_ma.length - 1]
+		for (let i = 0; i < last.length; i++) {
+			if(last[i] === "X" && last[i+1] === "X" || last[i] === "X" && last[i-1] === null ) bang_giai_ma[bang_giai_ma.length - 1][i] = null;
+		}
+		//in ra
+		for (let i = 0; i < bang_giai_ma.length; i++) {
+			for (let j = 0; j < bang_giai_ma[i].length; j++) {
+				if(bang_giai_ma[i][j] !== null) result += bang_giai_ma[i][j]
+			}
+		}
+		kq.innerHTML = result
+	}
+	
+	
+	//khoa day so
+	//Loại khoá này phần lớn là giống với khoá chữ cái, chỉ khác là thay vì phải sắp xếp lại chữ cái theo alphabet để có thứ tự cột
+	//thì khoá dãy số đã cho sẫn dãy số là thứ tự các cột rồi. Phần sau xử lý y hệt khoá chữ cái.
+	function ma_hoa_khoa_day_so() {
+		result = "";
+		const ban_ro = document.querySelector('#chi-tiet .khoa-day-so #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa = document.querySelector('#chi-tiet .khoa-day-so #thu-nghiem div .khoa').value.toUpperCase()
+		const kq = document.querySelector('#chi-tiet .khoa-day-so #ket-qua div .ket-qua')
+		
+		let khoa_so = [];
+		for(let i=0; i<khoa.length; i++){
+			khoa_so.push(parseInt(khoa[i] - 1))
+		}
+		console.log(khoa_so)
+		let bang_ma_hoa = [], tmp = [];
+		for (let i = 0; i < ban_ro.length; i++) {
+			tmp.push(ban_ro[i]);
+			if ((i + 1) % khoa.length === 0) {
+				bang_ma_hoa.push(tmp);
+				tmp = [];
+			}
+		}
+		//Them X
+		if (tmp.length > 0){
+			if(tmp.length < khoa.length){
+				let so_luong_x = khoa.length - tmp.length;
+				for(let i=0; i<so_luong_x; i++){
+					tmp.push("X");
+				}
+			}
+			bang_ma_hoa.push(tmp);
+		}
+		console.log(bang_ma_hoa)
+		
+		for (let i = 0; i < khoa.length; i++) {
+			let col;
+			for (let k = 0; k < khoa_so.length; k++) {
+				if(i===khoa_so[k]) col = khoa_so.indexOf(i);
+			}
+
+			for (let j = 0; j < bang_ma_hoa.length; j++) {
+				result += bang_ma_hoa[j][col];
+			}
+		}
+		//console.log(result)
+		kq.innerHTML = result;
+	}
+	
+	function giai_ma_khoa_day_so() {
+		result = "";
+		const ban_ma = document.querySelector('#chi-tiet .khoa-day-so #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa = document.querySelector('#chi-tiet .khoa-day-so #thu-nghiem div .khoa').value.toUpperCase()
+		const kq = document.querySelector('#chi-tiet .khoa-day-so #ket-qua div .ket-qua')
+		
+		let khoa_so = [];
+		for(let i=0; i<khoa.length; i++){
+			khoa_so.push(parseInt(khoa[i] - 1))
+		}
+		
+		let bang_giai_ma = [];
+		let so_cot = ban_ma.length/khoa.length;
+		for (let i = 0; i < so_cot; i++){
+			let hang = [];
+			for (let j = 0; j < khoa.length; j++){
+				hang.push(null);
+			}
+			bang_giai_ma.push(hang);
+		}
+		for (let i = 0; i < khoa.length; i++) {
+			let col = khoa_so[i];
+
+			for (let j = 0; j < bang_giai_ma.length; j++) {
+				let vitri = col*so_cot + j;
+				bang_giai_ma[j][i] = ban_ma[vitri]
+			}
+		}
+		console.log(bang_giai_ma)
+		//Chem X
+		let last = bang_giai_ma[bang_giai_ma.length - 1]
+		for (let i = 0; i < last.length; i++) {
+			if(last[i] === "X" && last[i+1] === "X" || last[i] === "X" && last[i-1] === null ) bang_giai_ma[bang_giai_ma.length - 1][i] = null;
+		}
+		//in ra
+		for (let i = 0; i < bang_giai_ma.length; i++) {
+			for (let j = 0; j < bang_giai_ma[i].length; j++) {
+				if(bang_giai_ma[i][j] !== null) result += bang_giai_ma[i][j]
+			}
+		}
+		kq.innerHTML = result
+		console.log(result)
+	}
+	
+	//hoan vi kep
+	//Loại khoá này cơ bản là giồng với 2 loại khoá trên, nhưng phức tạp hơn 1 chút, vì hoán vị 2 lần.
+	//Vậy nên sẽ có độ bảo mật cao hơn 1 chút.
+	//Đã bao gồm tất cả các trường hợp: bản rõ <= khoá, bản rõ > khoá
+	function khoi_tao_bang(so_hang, so_cot){
+		let bang = [];
+		for (let i = 0; i < so_hang; i++){
+			let hang = [];
+			for (let j = 0; j < so_cot; j++){
+				hang.push(null);
+			}
+			bang.push(hang);
+		}
+		return bang;
+	}
+	
+	function ma_hoa_hoan_vi_kep() {
+		result = "";
+		const ban_ro = document.querySelector('#chi-tiet .hoan-vi-kep #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa_hang = document.querySelector('#chi-tiet .hoan-vi-kep #thu-nghiem div .khoa-hang').value.toUpperCase()
+		const khoa_cot = document.querySelector('#chi-tiet .hoan-vi-kep #thu-nghiem div .khoa-cot').value.toUpperCase()
+		const kq = document.querySelector('#chi-tiet .hoan-vi-kep #ket-qua div .ket-qua')
+		let so_hang = khoa_hang.length;
+		let so_cot = khoa_cot.length;
+		
+		if(ban_ro.length > so_hang*so_cot) {
+			let ban_ro_block = "";
+			let so_block = parseInt(ban_ro.length / (so_hang*so_cot)) + 1
+			for(let i=0; i< so_block; i++) {
+				let a = i*(so_hang*so_cot);
+				let b = (i+1)*(so_hang*so_cot);
+				for(let j = a; j < b; j++) {
+					if(ban_ro[j] !== undefined) ban_ro_block += ban_ro[j]
+				}
+				xu_ly_1_block(ban_ro_block);
+				ban_ro_block = "";
+			}
+		}
+		else xu_ly_1_block(ban_ro);
+		
+		function xu_ly_1_block(ban_ro_block) {
+			let khoa_hang_tho = [];
+			let khoa_cot_tho = [];
+			for(let i=0; i<khoa_hang.length; i++){
+				khoa_hang_tho.push(khoa_hang[i]);
+			}
+			for(let i=0; i<khoa_cot.length; i++){
+				khoa_cot_tho.push(khoa_cot[i]);
+			}
+			khoa_hang_tho.sort();
+			khoa_cot_tho.sort();
+
+			let cot_ban_dau = [];
+			let hang_ban_dau = [];
+			for(let i=0; i<khoa_cot.length; i++){
+				let j = khoa_cot_tho.indexOf(khoa_cot[i])
+				cot_ban_dau.push(j);
+				khoa_cot_tho[j] = null;
+			}
+			for(let i=0; i<khoa_hang.length; i++){
+				let j = khoa_hang_tho.indexOf(khoa_hang[i])
+				hang_ban_dau.push(j);
+				khoa_hang_tho[j] = null;
+			}
+			console.log("cot_ban_dau", cot_ban_dau)
+			console.log("hang_ban_dau", hang_ban_dau)
+			//khoi tao cac bang
+			let bang_hoan_vi_cot = khoi_tao_bang(so_hang, so_cot);
+			let bang_hoan_vi_hang = khoi_tao_bang(so_hang, so_cot);
+			let bang_ma_hoa = khoi_tao_bang(so_hang, so_cot);
+			let ind=0;
+			for (let i = 0; i < so_hang; i++) {
+				for (let j = 0; j < so_cot; j++) {
+					bang_ma_hoa[i][j] = ban_ro_block[ind++]
+				}
+			}
+			//Them X
+			for (let i = 0; i < so_hang; i++) {
+				for (let j = 0; j < so_cot; j++) {
+					if(bang_ma_hoa[i][j] === undefined) bang_ma_hoa[i][j] = "X";
+				}
+			}
+			console.log(bang_ma_hoa)
+			
+			//hoan vi cot
+			for (let i = 0; i < so_cot; i++) {
+				let col;
+				for (let k = 0; k < cot_ban_dau.length; k++) {
+					if(i===cot_ban_dau[k]) col = cot_ban_dau.indexOf(i);
+				}
+
+				for (let j = 0; j < so_hang; j++) {
+					bang_hoan_vi_cot[j][i] = bang_ma_hoa[j][col];
+				}
+			}
+			console.log(bang_hoan_vi_cot)
+
+			//hoan vi hang
+			for (let i = 0; i < so_hang; i++) {
+				let hang;
+				for (let k = 0; k < hang_ban_dau.length; k++) {
+					if(i===hang_ban_dau[k]) hang = hang_ban_dau.indexOf(i);
+				}
+
+				for (let j = 0; j < so_cot; j++) {
+					bang_hoan_vi_hang[i][j] = bang_hoan_vi_cot[hang][j];
+				}
+			}
+			console.log(bang_hoan_vi_hang)
+			for (let i = 0; i < so_hang; i++) {
+				for (let j = 0; j < so_cot; j++) {
+					result += bang_hoan_vi_hang[i][j];
+				}
+			}
+			console.log(result)
+		}
+
+		kq.innerHTML = result;
+		
+	}
+	
+	function giai_ma_hoan_vi_kep() { //EANHUMYEYINHXXUXENGUNHYTXXXXXXXXXXXXXXXXXXXXXXXX
+		result = "";
+		const ban_ma = document.querySelector('#chi-tiet .hoan-vi-kep #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa_hang = document.querySelector('#chi-tiet .hoan-vi-kep #thu-nghiem div .khoa-hang').value.toUpperCase()
+		const khoa_cot = document.querySelector('#chi-tiet .hoan-vi-kep #thu-nghiem div .khoa-cot').value.toUpperCase()
+		const kq = document.querySelector('#chi-tiet .hoan-vi-kep #ket-qua div .ket-qua')
+
+		let so_hang = khoa_hang.length;
+		let so_cot = khoa_cot.length;
+		
+		if(ban_ma.length > so_hang*so_cot) {
+			let ban_ma_block = "";
+			let so_block = parseInt(ban_ma.length / (so_hang*so_cot)) //vi la luon tron
+			for(let i=0; i < so_block; i++) {
+				let a = i*(so_hang*so_cot);
+				let b = (i+1)*(so_hang*so_cot);
+				for(let j = a; j < b; j++) {
+					if(ban_ma[j] !== undefined) ban_ma_block += ban_ma[j]
+				}
+				if(i === so_block - 1) xu_ly_1_block(ban_ma_block, true);
+				else xu_ly_1_block(ban_ma_block, false)
+				ban_ma_block = "";
+			}
+		}
+		else xu_ly_1_block(ban_ma, true);
+		
+		function xu_ly_1_block(ban_ma_block, last_block){
+		console.log("blcok: ", ban_ma_block)
+			let khoa_hang_tho = [];
+			let khoa_cot_tho = [];
+			for(let i=0; i<so_hang; i++){
+				khoa_hang_tho.push(khoa_hang[i]);
+			}
+			for(let i=0; i<so_cot; i++){
+				khoa_cot_tho.push(khoa_cot[i]);
+			}
+			khoa_hang_tho.sort();
+			khoa_cot_tho.sort();
+
+			let cot_ban_dau = [];
+			let hang_ban_dau = [];
+			for(let i=0; i<so_cot; i++){
+				let j = khoa_cot_tho.indexOf(khoa_cot[i])
+				cot_ban_dau.push(j);
+				khoa_cot_tho[j] = null;
+			}
+			for(let i=0; i<so_hang; i++){
+				let j = khoa_hang_tho.indexOf(khoa_hang[i])
+				hang_ban_dau.push(j);
+				khoa_hang_tho[j] = null;
+			}
+			console.log("cot_ban_dau", cot_ban_dau)
+			console.log("hang_ban_dau", hang_ban_dau)
+			let ind=0;
+			let bang_giai_ma_cot = khoi_tao_bang(so_hang, so_cot);
+			let bang_giai_ma_hang = khoi_tao_bang(so_hang, so_cot);
+			let bang_giai_ma = khoi_tao_bang(so_hang, so_cot);
+			for (let i = 0; i < so_hang; i++) {
+				for (let j = 0; j < so_cot; j++) {
+					bang_giai_ma_hang[i][j] = ban_ma_block[ind++]
+				}
+			}
+			console.log(bang_giai_ma_hang)
+			for (let i = 0; i < so_hang; i++) {
+				let hang = hang_ban_dau[i];
+
+				for (let j = 0; j < so_cot; j++) {
+					bang_giai_ma_cot[i][j] = bang_giai_ma_hang[hang][j];
+				}
+			}
+			console.log(bang_giai_ma_cot)
+			
+			for (let i = 0; i < so_cot; i++) {
+				let cot = cot_ban_dau[i];
+
+				for (let j = 0; j < so_hang; j++) {
+					bang_giai_ma[j][i] = bang_giai_ma_cot[j][cot];
+				}
+			}
+			console.log(bang_giai_ma)
+			
+			//Chem X neu la block cuoi
+			if(last_block === true){
+				for (let i = so_hang-1; i >= 0; i--) {
+					for (let j = so_cot-1; j >= 0; j--) {
+						if(
+						bang_giai_ma[i][j] === "X" && bang_giai_ma[i][j-1] === "X" ||
+						bang_giai_ma[i][j] === "X" && bang_giai_ma[i][j+1] === null ||
+						j === so_cot - 1 && bang_giai_ma[i][j] === "X" && bang_giai_ma[i+1][0] === null
+						) 
+							bang_giai_ma[i][j] = null;
+					}
+				}
+			}
+			
+			for (let i = 0; i < so_hang; i++) {
+				for (let j = 0; j < so_cot; j++) {
+					if(bang_giai_ma[i][j] !== null )result += bang_giai_ma[i][j];
+				}
+			}
+		}
+		
+		console.log(result)
+		kq.innerHTML = result;
+	}
+	
+	//hoan vi bang chu cai
+	//Loại khoá này cài đặt đơn giản, nhưng có không gian khoá lớn nhất trong các loại khoá trên.
+	//Không có chèn ký tự, đảm bảo dữ liệu nguyên vẹn.
+	function ma_hoa_hoan_vi_bang_chu_cai(){
+		result = "";
+		const ban_ro = document.querySelector('#chi-tiet .hoan-vi-bang-chu-cai #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa = document.querySelector('#chi-tiet .hoan-vi-bang-chu-cai #thu-nghiem div .khoa').value.toUpperCase().trim()
+		const kq = document.querySelector('#chi-tiet .hoan-vi-bang-chu-cai #ket-qua div .ket-qua')
+		
+		let so_hoa = [];
+		let ma_hoa = [];
+		for(let i=0; i<ban_ro.length; i++){
+			let c = bang_chu_cai.indexOf(ban_ro[i])
+			so_hoa[i] = c;
+		}
+		for(let i=0; i<ban_ro.length; i++){
+			ma_hoa[i] = khoa[so_hoa[i]];
+		}
+		for(let i=0; i<ban_ro.length; i++){
+			result += ma_hoa[i]
+		}
+		kq.innerHTML = result;
+		console.log(result)
+	}
+	
+	function giai_ma_hoan_vi_bang_chu_cai(){
+		result = "";
+		const ban_ma = document.querySelector('#chi-tiet .hoan-vi-bang-chu-cai #thu-nghiem div .ban-ro').value.toUpperCase()
+		const khoa = document.querySelector('#chi-tiet .hoan-vi-bang-chu-cai #thu-nghiem div .khoa').value.toUpperCase().trim()
+		const kq = document.querySelector('#chi-tiet .hoan-vi-bang-chu-cai #ket-qua div .ket-qua')
+		
+		let so_hoa = [];
+		let ma_hoa = [];
+		for(let i=0; i<ban_ma.length; i++){
+			let c = khoa.indexOf(ban_ma[i])
+			so_hoa[i] = c;
+		}
+		for(let i=0; i<ban_ma.length; i++){
+			ma_hoa[i] = bang_chu_cai[so_hoa[i]];
+		}
+		for(let i=0; i<ban_ma.length; i++){
+			result += ma_hoa[i]
+		}
+		kq.innerHTML = result;
+		console.log(result)
+	}
+	
+</script>
+</html>

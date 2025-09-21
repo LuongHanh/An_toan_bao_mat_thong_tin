@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Mã hoá Playfair</title>
+	<style>
+		body {
+		  background: #000;
+		  color: #00ff99;
+		  font-family: "Courier New", monospace;
+		  margin: 0;
+		  padding: 0;
+		}
+
+		h1, h2 {
+		  text-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99;
+		  text-align: center;
+		}
+
+		#thong-tin {
+		  padding: 20px;
+		  border-bottom: 1px solid #00ff99;
+		}
+
+		#chi-tiet {
+		  display: flex;
+		  justify-content: space-between;
+		  padding: 20px;
+		  gap: 20px;
+		}
+
+		#thu-nghiem, #ket-qua {
+		  flex: 1;
+		  background: rgba(0, 255, 153, 0.05);
+		  border: 1px solid #00ff99;
+		  border-radius: 8px;
+		  padding: 20px;
+		  box-shadow: 0 0 15px rgba(0, 255, 153, 0.5);
+		}
+
+		label {
+		  display: block;
+		  margin-top: 10px;
+		  font-weight: bold;
+		}
+
+		input {
+		  background: #000;
+		  color: #00ff99;
+		  border: 1px solid #00ff99;
+		  padding: 5px 10px;
+		  margin-bottom: 10px;
+		  width: 90%;
+		  font-size: 1rem;
+		}
+
+		button {
+		  background: #000;
+		  color: #00ff99;
+		  border: 1px solid #00ff99;
+		  padding: 8px 15px;
+		  margin: 5px 5px 0 0;
+		  cursor: pointer;
+		  font-family: inherit;
+		  font-size: 1rem;
+		  text-transform: uppercase;
+		  transition: all 0.2s ease;
+		}
+
+		button:hover {
+		  background: #00ff99;
+		  color: #000;
+		  box-shadow: 0 0 10px #00ff99, 0 0 20px #00ff99;
+		}
+
+		table {
+		  border-collapse: collapse;
+		  margin: 20px auto;
+		  box-shadow: 0 0 15px rgba(0, 255, 153, 0.3);
+		}
+
+		td {
+		  border: 1px solid #00ff99;
+		  padding: 10px 15px;
+		  text-align: center;
+		  font-size: 1.2rem;
+		  font-weight: bold;
+		}
+
+		.ket-qua {
+		  background: #000;
+		  border: 1px solid #00ff99;
+		  padding: 15px;
+		  font-size: 1.3rem;
+		  letter-spacing: 2px;
+		  text-align: center;
+		  text-shadow: 0 0 10px #00ff99;
+		  margin-top: 10px;
+		  word-break: break-word;
+		}
+	</style>
+</head>
+<body>
+	<div id="thong-tin">
+		<h1>Phương pháp mã hoá Playfair</h1>
+		<p>Mô tả: Playfair cipher là một phương pháp mã hoá thay thế theo cặp chữ cái (digraph substitution cipher), được Charles Wheatstone phát minh năm 1854 và phổ biến bởi Lord Playfair (nên mang tên ông).
+Khác với Caesar hay Vigenère mã hoá từng chữ, Playfair mã hoá theo từng cặp ký tự, làm cho việc phân tích tần suất khó khăn hơn.</p>
+	</div>
+	<div id="chi-tiet">
+		<div id="thu-nghiem">
+			<div>
+				<h2>Demo</h2>
+				<label>Nhập bản rõ/bản mã:</label><br>
+				<input class="ban-ro" value="TOIYEUEM"><br>
+				<label>Nhập khoá:</label><br>
+				<input class="khoa" type="text" value="DHKTCNTHAINGUYEN">
+			</div>
+			<table class="bang-ban-dau"></table>
+			<button class="ma-hoa">Mã hoá</button>
+			<button class="giai-ma">Giải mã</button>
+		</div>
+		<div id="ket-qua">
+			<table class="bang-phan-tich"></table>
+			<div>
+				<h2>Results</h2>
+				<p class="ket-qua"></p>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	const e_bang_ban_bau = document.querySelector('#thu-nghiem .bang-ban-dau')
+	const e_bang_phan_tich = document.querySelector('#ket-qua .bang-phan-tich')
+	const e_ket_qua = document.querySelector('#ket-qua div .ket-qua')
+	const e_ma_hoa_btn = document.querySelector('#thu-nghiem .ma-hoa')
+	const e_giai_ma_btn = document.querySelector('#thu-nghiem .giai-ma')
+	
+	function chuan_hoa_ky_tu(s){
+		return (s||"").toUpperCase().replace(/[^A-Z]/g,'').replace(/J/g,'I');
+	}
+	function tao_mang_ky_tu(keyword){
+		keyword = chuan_hoa_ky_tu(keyword);
+		const bang_ma = 'ABCDEFGHIKLMNOPQRSTUVWXYZ'; // không có J
+		const seen = new Set();
+		const arr = [];
+
+		for(const ch of keyword){
+			if(!seen.has(ch)) { seen.add(ch); arr.push(ch); }
+		}
+		for(const ch of bang_ma){
+			if(!seen.has(ch)){ seen.add(ch); arr.push(ch); }
+		}
+		return arr.slice(0,25);
+	}
+	function ke_bang(e_table, arr){
+		e_table.innerHTML = '';
+		for(let r=0;r<5;r++){
+			const tr = document.createElement('tr');
+			for(let c=0;c<5;c++){
+				const td = document.createElement('td');
+				td.textContent = arr[r*5 + c];
+				tr.appendChild(td);
+			}
+			e_table.appendChild(tr);
+		}
+	}
+	
+	// Tạo map ký tự -> vị trí
+	function tao_map(arr){
+		const pos = {};
+		for(let r=0;r<5;r++){
+			for(let c=0;c<5;c++){
+				pos[arr[r*5+c]] = [r,c];
+			}
+		}
+		return pos;
+	}
+
+	// Chia bản rõ thành bigram
+	function tao_bigram(text){
+		text = chuan_hoa_ky_tu(text);
+		let pairs = [];
+		for(let i=0;i<text.length;i++){
+			let a = text[i];
+			let b = text[i+1];
+			if(!b){
+				pairs.push([a,'X']);
+			} else if(a===b){
+				pairs.push([a,'X']);
+			} else {
+				pairs.push([a,b]);
+				i++;
+			}
+		}
+		return pairs;
+	}
+
+	// Mã hoá 1 cặp
+	function ma_hoa_cap(a,b,arr,pos){
+		let [ra,ca] = pos[a];
+		let [rb,cb] = pos[b];
+		if(ra===rb){
+			return [arr[ra*5+(ca+1)%5], arr[rb*5+(cb+1)%5]];
+		}else if(ca===cb){
+			return [arr[((ra+1)%5)*5+ca], arr[((rb+1)%5)*5+cb]];
+		}else{
+			return [arr[ra*5+cb], arr[rb*5+ca]];
+		}
+	}
+
+	// Giải mã 1 cặp
+	function giai_ma_cap(a,b,arr,pos){
+		let [ra,ca] = pos[a];
+		let [rb,cb] = pos[b];
+		if(ra===rb){
+			return [arr[ra*5+(ca+4)%5], arr[rb*5+(cb+4)%5]];
+		}else if(ca===cb){
+			return [arr[((ra+4)%5)*5+ca], arr[((rb+4)%5)*5+cb]];
+		}else{
+			return [arr[ra*5+cb], arr[rb*5+ca]];
+		}
+	}
+
+	// Mã hoá
+	function ma_hoa(text, arr){
+		const pos = tao_map(arr);
+		let pairs = tao_bigram(text);
+		let result = "";
+		for(let [a,b] of pairs){
+			let [x,y] = ma_hoa_cap(a,b,arr,pos);
+			result += x+y;
+		}
+		return result;
+	}
+
+	// Giải mã
+	function giai_ma(text, arr){
+		const pos = tao_map(arr);
+		let pairs = [];
+		text = chuan_hoa_ky_tu(text);
+		for(let i=0;i<text.length;i+=2){
+			pairs.push([text[i], text[i+1]]);
+		}
+		let result = "";
+		for(let [a,b] of pairs){
+			let [x,y] = giai_ma_cap(a,b,arr,pos);
+			result += x+y;
+		}
+		return result;
+	}
+	//bảng ban đầu
+	const arr_x = [];
+	for(let i=0; i<25; i++) arr_x.push('X');
+	ke_bang(e_bang_ban_bau, arr_x);
+	
+	// --- Gắn nút ---
+	e_ma_hoa_btn.onclick = function(){
+		const ban_ro = document.querySelector('#thu-nghiem div .ban-ro').value
+		const khoa = document.querySelector('#thu-nghiem div .khoa').value
+		const arr = tao_mang_ky_tu(khoa);
+		ke_bang(e_bang_phan_tich, arr);
+		const cipher = ma_hoa(ban_ro, arr);
+		e_ket_qua.textContent = cipher;
+	}
+	//dữ liệu vào coi như là bản rõ, đi tìm bản rõ thực sự có nghĩa
+	e_giai_ma_btn.onclick = function(){
+		const ban_ma = document.querySelector('#thu-nghiem div .ban-ro').value
+		const khoa = document.querySelector('#thu-nghiem div .khoa').value
+		const arr = tao_mang_ky_tu(khoa);
+		ke_bang(e_bang_phan_tich, arr);
+		const plain = giai_ma(ban_ma, arr);
+		console.log(plain)
+		e_ket_qua.textContent = plain;
+	}
+	
+</script>
+</html>

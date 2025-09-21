@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Mã hoá Caeser</title>
+	<style>
+		body {
+			font-size: 16px;
+			margin: 0;
+			padding: 0;
+			font-family: "Consolas", monospace;
+			background: radial-gradient(circle at top, #0d0d0d, #000000);
+			color: #c8f7ff;
+		}
+		#thong-tin {
+			text-align: center;
+			padding: 20px;
+			border-bottom: 1px solid #222;
+			background: linear-gradient(to right, #0d0d0d, #1a1a1a);
+			box-shadow: 0 0 15px #0ff2, 0 0 30px #0ff1 inset;
+		}
+		#thong-tin h1 {
+			color: #00ffe0;
+			text-shadow: 0 0 10px #00ffe0, 0 0 20px #00d4d4;
+		}
+		#chi-tiet {
+			display: flex;
+			min-height: calc(100vh - 120px);
+		}
+		#chi-tiet > div {
+			width: 50%;
+			padding: 20px;
+			background: rgba(20, 20, 20, 0.95);
+			backdrop-filter: blur(4px);
+		}
+		#ma-hoa {
+			border-right: 1px solid #333;
+		}
+		#chi-tiet h2 {
+			color: #00ffe0;
+			border-bottom: 2px solid #00ffe0;
+			padding-bottom: 8px;
+		}
+		#chi-tiet h3 {
+			color: #f26522;
+		}
+		textarea, input {
+			width: 90%;
+			margin: 8px 0;
+			padding: 10px;
+			background: #0d0d0d;
+			border: 1px solid #333;
+			border-radius: 6px;
+			color: #00ffe0;
+			font-size: 1em;
+			resize: none;
+			outline: none;
+			transition: all 0.3s ease;
+		}
+		textarea:focus, input:focus {
+			border-color: #f26522;
+			box-shadow: 0 0 8px #f26522;
+		}
+		button {
+			background: #2d2d2d;
+			color: white;
+			border: 2px solid #f26522;
+			padding: 0.6em 1.2em;
+			font-size: 1.1em;
+			cursor: pointer;
+			border-radius: 6px;
+			transition: all 0.3s ease;
+			margin-right: 8px;
+			margin-top: 10px;
+		}
+		button:hover {
+			background: #f26522;
+			color: #fff;
+			transform: scale(1.05);
+			box-shadow: 0 0 12px #f26522;
+		}
+		#chi-tiet p {
+			color: #eee;
+			font-size: 0.95em;
+			margin: 5px 0;
+			background: rgba(0, 255, 224, 0.05);
+			padding: 6px;
+			border-radius: 4px;
+			white-space: pre-wrap;
+		}
+		.ban-ro-thuc-su, .ma-hoa {
+			color: #0f0;
+			font-weight: bold;
+			text-shadow: 0 0 5px #0f0, 0 0 10px #0f04;
+		}
+		/* Popup */
+		.modal {
+			display: none; 
+			position: fixed; 
+			z-index: 1000; 
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto; 
+			background-color: rgba(0,0,0,0.7);
+		}
+		.modal-content {
+			background-color: #1a1a1a;
+			margin: 10% auto;
+			padding: 20px;
+			border: 2px solid #f26522;
+			border-radius: 10px;
+			width: 70%;
+			color: #0f0;
+			box-shadow: 0 0 20px #f26522;
+		}
+		.close {
+			color: #f26522;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+			cursor: pointer;
+		}
+		.close:hover {
+			color: #fff;
+		}
+	</style>
+</head>
+<body>
+	<div id="thong-tin">
+		<h1>Phương pháp mã hoá Caeser</h1>
+		<p>Mô tả: Mã hóa Caesar là một trong những phương pháp mã hóa cổ điển và đơn giản nhất. Ý tưởng chính là dịch chuyển mỗi chữ cái trong bản rõ một số bước cố định trên bảng chữ cái.</p>
+	</div>
+	<div id="chi-tiet">
+    <div id="ma-hoa">
+		<h2>Mã hoá</h2>
+		<div>
+			<h3>Demo</h3>
+			<label>Nhập bản rõ:</label><br>
+			<textarea class="ban-ro"></textarea><br>
+			<label>Nhập khoá k:</label><br>
+			<input class="khoa-k" type="number" value="0">
+		</div>
+		<button>Mã hoá</button>
+		<div>
+			<h3>Results</h3>
+			<p class="so-hoa-ban-ro"></p>
+			<p class="so-hoa-k"></p>
+			<p class="ma-hoa"></p>
+		</div>
+    </div>
+    <div id="giai-ma">
+		<h2>Giải mã</h2>
+		<div>
+			<h3>Demo</h3>
+			<label>Nhập bản mã hoá:</label><br>
+			<textarea class="ban-ma"></textarea><br>
+			<label>Nhập khoá k:</label><br>
+			<input class="khoa-k" type="number" value="0">
+		</div>
+		<button>Giải mã</button>
+		<button class="hack">Hack</button>
+		<div>
+			<h3>Results</h3>
+			<p class="so-hoa-ban-ma"></p>
+			<p class="so-hoa-k"></p>
+			<p class="ban-ro-thuc-su"></p>
+		</div>
+		</div>
+	</div>
+
+	<!-- Popup -->
+	<div id="hackModal" class="modal">
+		<div class="modal-content">
+		<span class="close">&times;</span>
+		<h2>Kết quả Hack</h2>
+		<div id="hackResults"></div>
+		</div>
+	</div>
+	<script>
+		const ma_hoa_btn = document.querySelector('#ma-hoa button')
+		const giai_ma_btn = document.querySelector('#giai-ma button')
+		const hack_btn = document.querySelector('#giai-ma .hack')
+
+		const bang_ma_anh = "abcdefghiklmnopqrstuvwxyz "
+		let so_hoa, result;
+		const N = bang_ma_anh.length;
+
+		// ===== Mã hoá =====
+		ma_hoa_btn.onclick = function(){
+			so_hoa = [], result = [];
+			let add_k = [];
+			const ban_ro = document.querySelector('#ma-hoa div .ban-ro').value
+			const k = parseInt(document.querySelector('#ma-hoa div .khoa-k').value)
+			if(k<0 || k===undefined || ban_ro === '') return;
+			const so_hoa_ban_ro = document.querySelector('#ma-hoa div .so-hoa-ban-ro')
+			const so_hoa_k = document.querySelector('#ma-hoa div .so-hoa-k')
+			const ma_hoa = document.querySelector('#ma-hoa div .ma-hoa')
+
+			so_hoa_ban_ro.innerHTML = "Số hoá bản rõ: ";
+			so_hoa_k.innerHTML = "Số hoá +k: ";
+			ma_hoa.innerHTML = "Bản mã ==>";
+
+			for(let i=0; i<ban_ro.length; i++){
+				const code = bang_ma_anh.indexOf(ban_ro[i]);
+				so_hoa.push(code);
+				const shifted = (code + k) % N;
+				add_k.push(shifted);
+				result.push(bang_ma_anh[shifted]);
+				so_hoa_ban_ro.innerHTML += " " + code;
+				so_hoa_k.innerHTML += " " + shifted;
+				ma_hoa.innerHTML += bang_ma_anh[shifted];
+			}
+		}
+
+		// ===== Giải mã =====
+		giai_ma_btn.onclick = function(){
+			so_hoa = [], result = [];
+			let sub_k = [];
+			const ban_ma = document.querySelector('#giai-ma div .ban-ma').value
+			const k = parseInt(document.querySelector('#giai-ma div .khoa-k').value)
+			if(k<0 || k===undefined || ban_ma === "") return;
+			const so_hoa_ban_ma = document.querySelector('#giai-ma div .so-hoa-ban-ma')
+			const so_hoa_k = document.querySelector('#giai-ma div .so-hoa-k')
+			const ban_ro_thuc_su = document.querySelector('#giai-ma div .ban-ro-thuc-su')
+
+			so_hoa_ban_ma.innerHTML = "Số hoá bản mã: ";
+			so_hoa_k.innerHTML = "Số hoá -k: ";
+			ban_ro_thuc_su.innerHTML = "Bản rõ ==>";
+
+			for(let i=0; i<ban_ma.length; i++){
+				const code = bang_ma_anh.indexOf(ban_ma[i]);
+				so_hoa.push(code);
+				const shifted = (code - k + N) % N;
+				sub_k.push(shifted);
+				result.push(bang_ma_anh[shifted]);
+				so_hoa_ban_ma.innerHTML += " " + code;
+				so_hoa_k.innerHTML += " " + shifted;
+				ban_ro_thuc_su.innerHTML += bang_ma_anh[shifted];
+			}
+		}
+
+		// ===== Hack =====
+		hack_btn.onclick = function(){
+		const ban_ma = document.querySelector('#giai-ma div .ban-ma').value
+		const modal = document.getElementById("hackModal")
+		const closeBtn = document.querySelector(".close")
+		const hackResults = document.getElementById("hackResults")
+		if(ban_ma === "") return;
+		hackResults.innerHTML = "";
+		for(let h=0; h<N; h++){
+			const p = document.createElement('p');
+			// Thêm phần tiền tố "k=h: "
+			p.appendChild(document.createTextNode(`k=${h}: `));
+
+			for (let i = 0; i < ban_ma.length; i++) {
+				const ch = ban_ma[i];
+				const code = bang_ma_anh.indexOf(ch);
+				const shifted = (code - h + N) % N;
+				// Append ký tự đã dịch dưới dạng text node (an toàn với <,>,&)
+				p.appendChild(document.createTextNode(bang_ma_anh[shifted]));
+			}
+
+			hackResults.appendChild(p);
+		}
+		modal.style.display = "block";
+		closeBtn.onclick = () => modal.style.display = "none";
+		window.onclick = (e) => { if (e.target == modal) modal.style.display = "none"; }
+    }
+	</script>
+</body>
+</html>
