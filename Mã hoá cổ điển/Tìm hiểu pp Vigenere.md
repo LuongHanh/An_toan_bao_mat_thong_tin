@@ -1,4 +1,4 @@
-# PHƯƠNG PHÁP MÃ HOÁ Vigenere
+# PHƯƠNG PHÁP MÃ HOÁ VIGENÈRE
 <img width="1280" height="720" alt="image" src="https://github.com/user-attachments/assets/17dba956-b58f-4bc1-8aa7-b09cbce6d7bd" />
 
 ## 1.Tên gọi: Vigenere Cipher
